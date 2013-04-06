@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+gjs -I @jsdir@ @jsdir@/main.js

@@ -1,0 +1,154 @@
+#!/usr/bin/env gjs
+
+const Lang = imports.lang;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
+const core = imports.core;
+
+let GCanaveral = Lang.Class({
+	
+	Name: "GCanaveral",
+	
+	Extends: Gtk.Application,
+	
+	_init: function() {
+		
+		this.builder = new Gtk.Builder();
+		this.builder.add_from_file("@jsdir@/../ui/main.ui"); 
+		
+		this._createMember("dialog1", "dialog");
+		this._createMember("name");
+		this._createMember("exec");
+		this._createMember("btnSearchExec");
+		this._iconPath = ""
+		this._createMember("btnSearchIcon");
+		this._createMember("imageIcon");
+				
+		this._connectSignals();
+	
+	},
+	
+	run: function() {
+		
+		this.dialog.show_all();
+		
+		if (this.dialog.run() === 0) {
+			
+			let data = this.getData();
+			
+			let startDir = GLib.get_home_dir() + "/.local/share/applications";
+			
+			let filePath = this._chooseFile(
+				"Save launcher",
+				Gtk.FileChooserAction.SAVE,
+				startDir,
+				data.name + ".desktop"
+				);
+			
+			if ( filePath !== "" ) {
+				
+				let creator = new core.FileCreator(
+					data.name,
+					data.execPath,
+					data.iconPath
+					);
+				creator.createDesktopFile(filePath);	
+				
+			}
+						
+		}
+		
+	},
+
+	getData: function() {
+		
+		return {
+			name: this.name.get_text(),
+			execPath: this.exec.get_text(),
+			iconPath: this._iconPath
+		};
+		
+	},
+	
+	_connectSignals: function() {
+		
+		this.btnSearchExec.connect("clicked", Lang.bind(this, this._chooseExec));
+		this.btnSearchIcon.connect("clicked", Lang.bind(this, this._chooseIcon));
+		
+	},
+	
+	_createMember: function(objName, memberName) {
+		
+		let name = memberName || objName;
+		this[name] = this.builder.get_object(objName);
+		
+	},
+	
+	_chooseExec: function() {
+		
+		let execPath = this._chooseFile("Choose Executable");
+		
+		if (execPath !== "") {
+			this.exec.set_text(execPath);
+		}
+		
+	},
+	
+	_chooseIcon: function() {
+
+		let iconPath = this._chooseFile("Choose Icon");
+		
+		if (iconPath !== 0) {
+			
+			this._iconPath = iconPath;
+			
+			let pixbuf = GdkPixbuf.Pixbuf.new_from_file(iconPath);
+			this.imageIcon.set_from_pixbuf(pixbuf.scale_simple(50, 50, 0));
+			
+		}
+		
+	},
+	
+	_chooseFile: function(title, action, startDir, fileName) {
+		
+		let path = "";
+		let act = action || Gtk.FileChooserAction.OPEN;
+		
+		let dialog = new Gtk.FileChooserDialog({
+			title: title,
+			action: act
+			});
+		dialog.add_button("gtk-cancel", Gtk.ResponseType.CANCEL);
+		dialog.add_button("gtk-ok", Gtk.ResponseType.OK);
+		
+		if (typeof(startDir) === "undefined") {
+			dialog.set_current_folder(".");
+		} else {
+			dialog.set_current_folder(startDir);
+		}
+		
+		if (typeof(fileName) !== "undefined") {
+			dialog.set_current_name(fileName);
+		}
+						
+		if (dialog.run() === Gtk.ResponseType.OK) {
+			
+			path = dialog.get_filename();
+			
+		}
+		
+		dialog.destroy();
+				
+		return path;
+		
+	}
+		
+});
+
+Gtk.init(null, 0);
+
+let app = new GCanaveral();
+
+app.run()
+
