@@ -24,7 +24,7 @@ FileCreator.prototype.createDesktopFile = function(filePath) {
 	this._writeln("Version=1.0");
 	this._writeln("Type=Application");
 	this._writeln("Name=" + this.name);
-	this._writeln("Exec=" + this.execPath);
+	this._writeln("Exec=\"" + this.execPath + "\"");
 	if (this.iconPath !== "") this._writeln("Icon=" + this.iconPath);
 	
 	this.ostream.close(null);
