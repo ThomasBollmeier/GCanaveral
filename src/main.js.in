@@ -99,7 +99,7 @@ let GCanaveral = Lang.Class({
 
 		let iconPath = this._chooseFile("Choose Icon");
 		
-		if (iconPath !== 0) {
+		if (iconPath !== "") {
 			
 			this._iconPath = iconPath;
 			
