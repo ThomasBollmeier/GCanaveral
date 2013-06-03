@@ -1,9 +1,15 @@
 const Gio = imports.gi.Gio;
 
-var FileCreator = function(name, execPath, iconPath) {
+var FileCreator = function(
+	name, 
+	execPath,
+	fileSupport, 
+	iconPath
+	) {
 		
 	this.name = name;
 	this.execPath = execPath;
+	this.fileSupport = fileSupport;
 	this.iconPath = iconPath;
 	
 	this.ostream = null;
@@ -24,7 +30,11 @@ FileCreator.prototype.createDesktopFile = function(filePath) {
 	this._writeln("Version=1.0");
 	this._writeln("Type=Application");
 	this._writeln("Name=" + this.name);
-	this._writeln("Exec=\"" + this.execPath + "\"");
+	if (!this.fileSupport) {
+		this._writeln("Exec=\"" + this.execPath + "\"");
+	} else {
+		this._writeln("Exec=\"" + this.execPath + " %f\"");
+	}
 	if (this.iconPath !== "") this._writeln("Icon=" + this.iconPath);
 	
 	this.ostream.close(null);

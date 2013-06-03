@@ -1,4 +1,4 @@
-AC_INIT([gcanaveral], [0.1.1], [tbollmeier@web.de])
+AC_INIT([gcanaveral], [0.1.2], [tbollmeier@web.de])
 
 AM_INIT_AUTOMAKE([1.11])
 AM_SILENT_RULES([yes])

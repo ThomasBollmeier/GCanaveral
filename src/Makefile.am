@@ -12,10 +12,10 @@ dist_js_DATA = \
 nodist_js_DATA = \
 	main.js
 		
-gcanaveral: 
+gcanaveral:
 	@sed -e "s#@jsdir@#$(jsdir)#g" < $(abs_top_srcdir)/src/gcanaveral.in > $@
 
-main.js: 
+main.js:
 	@sed -e "s#@jsdir@#$(jsdir)#g" < $(abs_top_srcdir)/src/main.js.in > $@
 	
 all-local: gcanaveral main.js

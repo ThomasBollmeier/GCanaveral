@@ -21,6 +21,7 @@ let GCanaveral = Lang.Class({
 		this._createMember("name");
 		this._createMember("exec");
 		this._createMember("btnSearchExec");
+		this._createMember("cbtnFileSupport");
 		this._iconPath = ""
 		this._createMember("btnSearchIcon");
 		this._createMember("imageIcon");
@@ -51,6 +52,7 @@ let GCanaveral = Lang.Class({
 				let creator = new core.FileCreator(
 					data.name,
 					data.execPath,
+					data.fileSupport,
 					data.iconPath
 					);
 				creator.createDesktopFile(filePath);	
@@ -66,6 +68,7 @@ let GCanaveral = Lang.Class({
 		return {
 			name: this.name.get_text(),
 			execPath: this.exec.get_text(),
+			fileSupport: this.cbtnFileSupport.get_active(),
 			iconPath: this._iconPath
 		};
 		
